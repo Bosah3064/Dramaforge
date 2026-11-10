@@ -1,0 +1,25 @@
+FROM node:24-alpine AS builder
+
+WORKDIR /app
+
+COPY package.json ./
+COPY packages/shared/package.json ./packages/shared/
+COPY packages/backend/package.json ./packages/backend/
+
+RUN npm install
+
+COPY packages/shared ./packages/shared
+COPY packages/backend ./packages/backend
+
+RUN npm run build --workspace=dramaforge-shared
+RUN npm run build --workspace=dramaforge-backend
+
+FROM node:24-alpine AS runner
+
+WORKDIR /app
+
+COPY --from=builder /app /app
+
+EXPOSE 3000
+
+CMD ["node", "packages/backend/dist/main.js"]

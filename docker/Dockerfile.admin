@@ -1,0 +1,21 @@
+FROM node:24-alpine AS builder
+
+WORKDIR /app
+
+COPY package.json ./
+COPY packages/shared/package.json ./packages/shared/
+COPY packages/admin-panel/package.json ./packages/admin-panel/
+
+RUN npm install
+
+COPY packages/shared ./packages/shared
+COPY packages/admin-panel ./packages/admin-panel
+
+RUN npm run build --workspace=dramaforge-admin-panel
+
+FROM nginx:alpine AS runner
+
+COPY --from=builder /app/packages/admin-panel/dist /usr/share/nginx/html
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

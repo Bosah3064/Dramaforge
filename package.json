@@ -1,0 +1,27 @@
+{
+  "name": "dramaforge-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DramaForge — AI Short Drama Studio and Photo Animation Platform",
+  "workspaces": [
+    "packages/shared",
+    "packages/backend",
+    "packages/admin-panel"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "start:backend": "npm run start:dev --workspace=dramaforge-backend",
+    "start:admin": "npm run dev --workspace=dramaforge-admin-panel"
+  },
+  "keywords": [
+    "ai",
+    "short-drama",
+    "video-generation",
+    "photo-effects",
+    "flutter",
+    "nestjs"
+  ],
+  "author": "DramaForge Team",
+  "license": "UNLICENSED"
+}

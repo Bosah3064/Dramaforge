@@ -1,0 +1,332 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum EnforcementState {
+  NONE
+  WARNING
+  FEATURE_LIMIT
+  TEMP_SUSPEND
+  BANNED
+}
+
+enum CoinBucket {
+  SUBSCRIPTION
+  PURCHASED
+}
+
+enum LedgerDirection {
+  CREDIT
+  DEBIT
+}
+
+enum LedgerReason {
+  GRANT
+  USAGE
+  REFUND
+  EXPIRY
+  ADMIN_ADJUSTMENT
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO_WEEKLY
+  PRO_MONTHLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  GRACE_PERIOD
+}
+
+enum ProjectMode {
+  QUICK
+  STUDIO
+}
+
+enum AspectRatio {
+  PORTRAIT_9_16
+  LANDSCAPE_16_9
+  SQUARE_1_1
+}
+
+enum ProjectStatus {
+  DRAFT
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum ShotStatus {
+  PENDING
+  IMAGE_GENERATING
+  IMAGE_DONE
+  VIDEO_GENERATING
+  VIDEO_DONE
+  FAILED
+}
+
+enum GenerationType {
+  STORY_SCRIPT
+  KEYFRAME_IMAGE
+  SHOT_VIDEO
+  FINAL_ASSEMBLY
+  PHOTO_EFFECT
+}
+
+enum GenerationStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum EffectType {
+  HUG
+  KISS
+  DANCE
+  LOOK_AT_CAMERA
+  AGING
+  BABY_VERSION
+  OUTFIT_CHANGE
+}
+
+enum ModerationAction {
+  ALLOW
+  WARN
+  BLOCK
+}
+
+model User {
+  id                String            @id @default(uuid())
+  email             String            @unique
+  passwordHash      String
+  role              UserRole          @default(USER)
+  enforcementState  EnforcementState  @default(NONE)
+  isAgeVerified     Boolean           @default(false)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  consentRecords    ConsentRecord[]
+  enforcementEvents EnforcementEvent[]
+  subscriptions     Subscription[]
+  coinLedgers       CoinLedger[]
+  projects          Project[]
+  generations       Generation[]
+  effectsJobs       EffectsJob[]
+  moderationEvents  ModerationEvent[]
+
+  @@map("users")
+}
+
+model ConsentRecord {
+  id                 String   @id @default(uuid())
+  userId             String
+  version            String
+  scope              String
+  providersDisclosed Json
+  ipAddress          String?
+  acceptedAt         DateTime @default(now())
+
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("consent_records")
+}
+
+model EnforcementEvent {
+  id            String           @id @default(uuid())
+  userId        String
+  previousState EnforcementState
+  newState      EnforcementState
+  reason        String
+  details       Json?
+  createdAt     DateTime         @default(now())
+
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("enforcement_events")
+}
+
+model Subscription {
+  id                 String             @id @default(uuid())
+  userId             String
+  storeId            String?            @unique
+  tier               SubscriptionTier   @default(FREE)
+  status             SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart DateTime           @default(now())
+  currentPeriodEnd   DateTime
+  coinsAllocated     Int                @default(0)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("subscriptions")
+}
+
+model CoinLedger {
+  id                        String          @id @default(uuid())
+  userId                    String
+  bucket                    CoinBucket
+  direction                 LedgerDirection
+  amount                    Int
+  balanceAfterSubscription  Int
+  balanceAfterPurchased     Int
+  reason                    LedgerReason
+  referenceId               String?
+  expiresAt                 DateTime?
+  createdAt                 DateTime        @default(now())
+
+  user                      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("coin_ledger")
+}
+
+model Project {
+  id                    String        @id @default(uuid())
+  userId                String
+  title                 String
+  mode                  ProjectMode   @default(STUDIO)
+  aspectRatio           AspectRatio   @default(PORTRAIT_9_16)
+  stylePreset           String        @default("cinematic")
+  targetDurationSeconds Int           @default(30)
+  status                ProjectStatus @default(DRAFT)
+  finalVideoUrl         String?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  user                  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stories               Story[]
+
+  @@index([userId])
+  @@map("projects")
+}
+
+model Story {
+  id          String   @id @default(uuid())
+  projectId   String
+  synopsis    String
+  genre       String   @default("drama")
+  characters  Json
+  scriptText  String
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  shots       Shot[]
+
+  @@index([projectId])
+  @@map("stories")
+}
+
+model Shot {
+  id                String     @id @default(uuid())
+  storyId           String
+  sequenceIndex     Int
+  sceneDescription  String
+  cameraDirection   String
+  dialogue          String?
+  durationSeconds   Int        @default(5)
+  keyframePrompt    String
+  keyframeImageUrl  String?
+  videoClipUrl      String?
+  status            ShotStatus @default(PENDING)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  story             Story      @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@index([storyId])
+  @@map("shots")
+}
+
+model Generation {
+  id            String           @id @default(uuid())
+  userId        String
+  jobId         String           @unique
+  type          GenerationType
+  provider      String           @default("MOCK")
+  coinCost      Int              @default(0)
+  status        GenerationStatus @default(QUEUED)
+  errorMessage  String?
+  refundStatus  Boolean          @default(false)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assets        Asset[]
+
+  @@index([userId])
+  @@index([jobId])
+  @@map("generations")
+}
+
+model Asset {
+  id              String      @id @default(uuid())
+  generationId    String
+  s3Key           String
+  mediaType       String
+  resolution      String      @default("1080x1920")
+  isWatermarked   Boolean     @default(false)
+  retentionExpiry DateTime?
+  createdAt       DateTime    @default(now())
+
+  generation      Generation  @relation(fields: [generationId], references: [id], onDelete: Cascade)
+
+  @@index([generationId])
+  @@index([retentionExpiry])
+  @@map("assets")
+}
+
+model EffectsJob {
+  id                      String     @id @default(uuid())
+  userId                  String
+  effectType              EffectType
+  sourceImageS3Key        String
+  secondaryImageS3Key     String?
+  hasConsentConfirmation  Boolean    @default(false)
+  status                  String     @default("QUEUED")
+  outputVideoS3Key        String?
+  createdAt               DateTime   @default(now())
+  updatedAt               DateTime   @updatedAt
+
+  user                    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("effects_jobs")
+}
+
+model ModerationEvent {
+  id              String           @id @default(uuid())
+  userId          String
+  contentType     String
+  triggerKeyword  String?
+  riskScore       Float            @default(0.0)
+  actionTaken     ModerationAction @default(ALLOW)
+  details         Json?
+  createdAt       DateTime         @default(now())
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("moderation_events")
+}
