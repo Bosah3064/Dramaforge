@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.role == 'ADMIN';
+    }
+
+    // 1. Users Collection
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      // Allow account creation with 13+ age gate check
+      allow create: if isOwner(userId) && request.resource.data.isAgeVerified == true;
+      allow update: if isOwner(userId) && 
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'enforcementState']);
+      allow delete: if isOwner(userId) || isAdmin();
+
+      // Pre-transfer AI Consent Records
+      match /consent_records/{consentId} {
+        allow read: if isOwner(userId) || isAdmin();
+        allow create: if isOwner(userId);
+        allow update, delete: if false; // Immutable audit log
+      }
+
+      // Dual-Bucket Coin Ledger (STRICT SERVER/ADMIN ONLY WRITES)
+      match /coin_ledger/{ledgerId} {
+        allow read: if isOwner(userId) || isAdmin();
+        allow write: if false; // Only Cloud Functions or Admin SDK can credit/debit
+      }
+
+      // In-App Subscriptions
+      match /subscriptions/{subId} {
+        allow read: if isOwner(userId) || isAdmin();
+        allow write: if false; // Handled by server webhook verification
+      }
+    }
+
+    // 2. Drama Projects & Storyboard
+    match /projects/{projectId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+
+      match /stories/{storyId} {
+        allow read, write: if isAuthenticated();
+        
+        match /shots/{shotId} {
+          allow read, write: if isAuthenticated();
+        }
+      }
+    }
+
+    // 3. Generations Collection
+    match /generations/{generationId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow write: if false; // Managed by backend queue workers
+    }
+
+    // 4. Viral Photo Effects Jobs
+    match /effects_jobs/{jobId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.hasConsentConfirmation == true; // Face consent mandatory
+      allow update: if false;
+    }
+
+    // 5. Moderation Events (Admin Only)
+    match /moderation_events/{eventId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
