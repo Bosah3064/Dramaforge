@@ -9,13 +9,6 @@
       ]
     },
     {
-      "collectionGroup": "shots",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "sequenceIndex", "order": "ASCENDING" }
-      ]
-    },
-    {
       "collectionGroup": "projects",
       "queryScope": "COLLECTION",
       "fields": [
@@ -26,4 +19,3 @@
   ],
   "fieldOverrides": []
 }
-
