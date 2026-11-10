@@ -1,0 +1,19 @@
+{
+  "_comment": "REPLACE THIS FILE with the google-services.json downloaded from your Firebase Console",
+  "project_info": {
+    "project_number": "000000000000",
+    "project_id": "dramaforge-studio",
+    "storage_bucket": "dramaforge-studio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+        "android_client_info": {
+          "package_name": "ai.dramaforge.studio"
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
