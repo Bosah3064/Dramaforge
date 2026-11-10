@@ -49,7 +49,7 @@ class WalletScreen extends StatelessWidget {
                     children: const [
                       Icon(Icons.monetization_on, color: AppTheme.goldCoin, size: 36),
                       SizedBox(width: 8),
-                      Text('450', style: TextStyle(fontSize: 40, fontWeight: FontWeight.black, color: Colors.white)),
+                      Text('450', style: TextStyle(fontSize: 40, fontWeight: FontWeight.w900, color: Colors.white)),
                       SizedBox(width: 4),
                       Text('coins', style: TextStyle(fontSize: 16, color: Colors.white70)),
                     ],
@@ -179,7 +179,7 @@ class WalletScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(title, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 14)),
               Text(price, style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.goldCoin, fontSize: 14)),

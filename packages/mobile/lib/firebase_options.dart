@@ -48,3 +48,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'dramaforge-f0357.firebasestorage.app',
   );
 }
+

@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       gradient: const LinearGradient(colors: [AppTheme.primaryPurple, AppTheme.primaryIndigo]),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Text('DF', style: TextStyle(fontWeight: FontWeight.black, fontSize: 13)),
+                    child: const Text('DF', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13)),
                   ),
                   const SizedBox(width: 8),
                   const Text('DramaForge'),

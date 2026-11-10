@@ -111,7 +111,7 @@ class _StudioScreenState extends State<StudioScreen> {
                 ? AppTheme.successGreen
                 : isActive
                     ? AppTheme.primaryPurple
-                    : Colors.slate.shade800,
+                    : AppTheme.surfaceCard,
             child: isDone
                 ? const Icon(Icons.check, size: 14, color: Colors.white)
                 : Text('$stage', style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold)),
@@ -196,7 +196,7 @@ class _StudioScreenState extends State<StudioScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.between,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text('Storyboard Keyframe Grid', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
             Text('${_shots.length} Shots Planned', style: const TextStyle(fontSize: 12, color: Colors.white60)),
@@ -227,7 +227,7 @@ class _StudioScreenState extends State<StudioScreen> {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.slate.shade900,
+                          color: AppTheme.darkBackground,
                           borderRadius: BorderRadius.circular(10),
                           gradient: LinearGradient(
                             colors: [Colors.purple.shade900, Colors.indigo.shade900],

@@ -12,7 +12,6 @@ class AgeGateScreen extends StatefulWidget {
 
 class _AgeGateScreenState extends State<AgeGateScreen> {
   bool _isConfirmed = false;
-  DateTime? _selectedBirthDate;
 
   @override
   Widget build(BuildContext context) {

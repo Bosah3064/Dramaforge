@@ -106,9 +106,9 @@ class _PhotoEffectsScreenState extends State<PhotoEffectsScreen> {
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.rose.shade950.withOpacity(0.3),
+                color: AppTheme.accentRose.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.rose.shade800.withOpacity(0.6)),
+                border: Border.all(color: AppTheme.accentRose.withOpacity(0.5)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

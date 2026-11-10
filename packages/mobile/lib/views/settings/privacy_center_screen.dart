@@ -90,7 +90,7 @@ class PrivacyCenterScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppTheme.surfaceCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isDestructive ? Colors.rose.shade900 : AppTheme.surfaceBorder),
+        border: Border.all(color: isDestructive ? AppTheme.accentRose : AppTheme.surfaceBorder),
       ),
       child: ListTile(
         leading: Icon(icon, color: isDestructive ? AppTheme.accentRose : AppTheme.primaryPurple),
@@ -118,7 +118,7 @@ class PrivacyCenterScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(title, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13)),
               Container(
