@@ -112,3 +112,4 @@ flutter run
 ## ⚖️ Clean-Room Competitive Compliance Note
 
 This repository contains an original, clean-room product. No proprietary code, binaries, or decompiled assets from competitor applications were used. All feature specifications are derived from public terms of use, privacy policies, store listings, and user community reviews.
+

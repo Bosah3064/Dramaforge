@@ -19,3 +19,4 @@ class AppConstants {
 
   static const String consentTermsVersion = '2026.1';
 }
+

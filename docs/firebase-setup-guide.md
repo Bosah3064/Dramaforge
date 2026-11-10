@@ -288,3 +288,4 @@ firebase use dramaforge-studio
 # Deploy Firestore rules and indexes
 firebase deploy --only firestore:rules,firestore:indexes
 ```
+

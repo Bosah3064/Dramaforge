@@ -1,16 +1,26 @@
 {
-  "_comment": "REPLACE THIS FILE with the google-services.json downloaded from your Firebase Console",
   "project_info": {
-    "project_number": "000000000000",
-    "project_id": "dramaforge-studio",
-    "storage_bucket": "dramaforge-studio.appspot.com"
+    "project_number": "239197337115",
+    "project_id": "dramaforge-f0357",
+    "storage_bucket": "dramaforge-f0357.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+        "mobilesdk_app_id": "1:239197337115:android:2efdb7e7af75fc747d2abe",
         "android_client_info": {
           "package_name": "ai.dramaforge.studio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDbelEEs9gewOmgD3H9TPEwMXxyANBRhs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
         }
       }
     }

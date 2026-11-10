@@ -36,3 +36,4 @@
 - [x] **Consumer-Friendly Non-Expiring Coins**: Purchased point packs never expire and are consumed strictly after subscription points.
 - [x] **Automated Refund Guarantee**: Any network error, GPU timeout, or AI safety rejection automatically generates a compensating credit entry in the immutable `coin_ledger`.
 - [x] **Restore Purchases**: Present and operational on the wallet paywall screen.
+

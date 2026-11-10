@@ -104,3 +104,4 @@ describe('Dual-Bucket Coin Ledger & Financial Invariants', () => {
     expect(balance.totalCoins).toBe(30);
   });
 });
+

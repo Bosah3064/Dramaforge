@@ -46,3 +46,4 @@ class ApiClient {
     _authToken = null;
   }
 }
+

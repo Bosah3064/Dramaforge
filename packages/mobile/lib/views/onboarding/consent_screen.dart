@@ -128,3 +128,4 @@ class _PreTransferConsentScreenState extends State<PreTransferConsentScreen> {
     );
   }
 }
+

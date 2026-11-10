@@ -101,3 +101,4 @@ describe('Moderation Engine & Graduated Enforcement State Machine', () => {
     expect(() => moderationService.validateFaceConsent(true)).not.toThrow();
   });
 });
+

@@ -154,3 +154,4 @@ class _PhotoEffectsScreenState extends State<PhotoEffectsScreen> {
     );
   }
 }
+
