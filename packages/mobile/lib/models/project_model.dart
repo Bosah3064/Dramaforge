@@ -80,17 +80,6 @@ class ProjectModel {
     );
   }
 }
-      title: title ?? this.title,
-      mode: mode ?? this.mode,
-      aspectRatio: aspectRatio ?? this.aspectRatio,
-      status: status ?? this.status,
-      finalVideoUrl: finalVideoUrl ?? this.finalVideoUrl,
-      bgmTrack: bgmTrack ?? this.bgmTrack,
-      lutFilter: lutFilter ?? this.lutFilter,
-      stories: stories ?? this.stories,
-    );
-  }
-}
 
 class CharacterModel {
   final String name;

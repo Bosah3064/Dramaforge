@@ -60,6 +60,7 @@ class GenerationService {
   GenerationService._internal();
 
   final ApiClient _apiClient = ApiClient();
+  ApiClient get apiClient => _apiClient;
 
   static const List<VisualMediumConfig> visualMediums = [
     VisualMediumConfig(
