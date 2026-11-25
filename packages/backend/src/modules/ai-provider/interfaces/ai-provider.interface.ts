@@ -5,6 +5,8 @@ export interface CharacterDefinition {
   appearance: string;
   voiceStyle?: string;
   referenceImageUrl?: string;
+  voicePersona?: string;
+  voiceId?: string;
 }
 
 export interface StoryScriptResult {
@@ -18,6 +20,9 @@ export interface StoryboardShotPlan {
   sequenceIndex: number;
   sceneDescription: string;
   cameraDirection: string;
+  cameraMotion?: string;
+  lightingStyle?: string;
+  sfxCue?: string;
   dialogue?: string;
   durationSeconds: number;
   keyframePrompt: string;

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EffectType } from 'dramaforge-shared';
 import { MockAIAdapter } from './adapters/mock-ai.adapter';
+import { RealAIAdapter } from './adapters/real-ai.adapter';
 import {
   CharacterDefinition,
   FinalCutResult,
@@ -21,11 +22,15 @@ export class AIProviderService implements IAIProvider {
   constructor(
     private readonly configService: ConfigService,
     private readonly mockAdapter: MockAIAdapter,
+    private readonly realAdapter: RealAIAdapter,
   ) {
     const mode = this.configService.get<string>('AI_PROVIDER_MODE', 'mock').toLowerCase();
     this.logger.log(`AIProviderService initialized in [${mode.toUpperCase()}] mode`);
-    // Default to Mock adapter for safe offline development and automated testing
-    this.activeProvider = this.mockAdapter;
+    if (mode === 'production' || mode === 'real') {
+      this.activeProvider = this.realAdapter;
+    } else {
+      this.activeProvider = this.mockAdapter;
+    }
   }
 
   getProviderName(): string {

@@ -1,6 +1,7 @@
-import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CharacterDefinition } from '../ai-provider/interfaces/ai-provider.interface';
 import { GenerateStoryDto, PipelineService, QuickGenerateDto } from './pipeline.service';
 
 @ApiTags('Drama Generation Pipeline (4-Stage & Quick)')
@@ -21,6 +22,16 @@ export class PipelineController {
   @ApiOperation({ summary: 'Stage 1: Generate Story & Script (Free)' })
   async generateStory(@Req() req: any, @Body() dto: GenerateStoryDto) {
     return this.pipelineService.generateStory(req.user.id, dto);
+  }
+
+  @Put('story/:storyId/characters')
+  @ApiOperation({ summary: 'Stage 1b: Add or update character reference images for scene synthesis' })
+  async updateCharacters(
+    @Req() req: any,
+    @Param('storyId') storyId: string,
+    @Body('characters') characters: CharacterDefinition[],
+  ) {
+    return this.pipelineService.updateStoryCharacters(req.user.id, storyId, characters);
   }
 
   @Post('storyboard/:storyId')

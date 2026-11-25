@@ -87,6 +87,26 @@ export class PipelineService {
   }
 
   /**
+   * UPDATE STORY CHARACTERS & REFERENCE IMAGES
+   * Allows user to assign character reference images after prompt analysis
+   */
+  async updateStoryCharacters(userId: string, storyId: string, characters: CharacterDefinition[]) {
+    const story = await this.prisma.story.findUnique({
+      where: { id: storyId },
+      include: { project: true },
+    });
+
+    if (!story || story.project.userId !== userId) {
+      throw new NotFoundException('Story not found');
+    }
+
+    return this.prisma.story.update({
+      where: { id: storyId },
+      data: { characters: characters as any },
+    });
+  }
+
+  /**
    * STAGE 2: STORYBOARD & KEYFRAME GENERATION
    * Cost: 2 coins per shot
    */
@@ -137,12 +157,17 @@ export class PipelineService {
       // Clean previous shots if re-running
       await this.prisma.shot.deleteMany({ where: { storyId } });
 
+      // Gather character reference images if present
+      const characterRefs = ((story.characters as any[]) || [])
+        .map((c: any) => c.referenceImageUrl)
+        .filter((url: any): url is string => typeof url === 'string' && url.length > 0);
+
       const createdShots = [];
       for (const plan of shotPlans) {
-        // Generate keyframe image via AI Provider
+        // Generate keyframe image via AI Provider using character reference images
         const keyframe = await this.aiProvider.generateKeyframe(
           plan.keyframePrompt,
-          [],
+          characterRefs,
           story.project.aspectRatio,
         );
 
